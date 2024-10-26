@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="./assets/img/icon.png" />
+    <link rel="stylesheet" href="css/style.css" />
+    <!-- Pico Css  -->
+    <link rel="stylesheet" href="libs/pico-main/css/pico.min.css" />
+    <!-- CSS do Toastify -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <title>Do Notas</title>
+</head>
+
+<body>
+    <main class="app container centralizado">
+        <!-- Pagina Inicial -->
+        <section id="select-turma__contatiner">
+            <h1>Selecione a turma</h1>
+            <main>
+                <select id="select-turma">
+                    <option value="informática">Informática</option>
+                    <option value="guia">Guia de Turismo</option>
+                    <option value="enfermagem">Enfermagem</option>
+                </select>
+                <small>Selecione uma turma</small>
+                <button class="outline secondary" id="btn-selecionar-turma">Continuar</button>
+            </main>
+        </section>
+        <!-- Seção para interagir com Alunos -->
+        <section id="aluno-zone">
+            <h2>Gerenciamento de Aluno</h2>
+
+            <input type="text" id="nome-aluno__aluno" placeholder="Nome do Aluno">
+            <button onclick="adicionarAluno()">Adicionar Aluno</button>
+
+            <h3>Inserir Nota</h3>
+            <input type="number" id="nota-aluno" placeholder="Inserir Nota">
+            <button onclick="inserirNota()">Inserir Nota</button>
+
+            <h3>Modificar Nota</h3>
+            <input type="number" id="indice-nota" placeholder="Índice da Nota">
+            <input type="number" id="nova-nota" placeholder="Nova Nota">
+            <button onclick="modificarNota()">Modificar Nota</button>
+
+            <button onclick="exibirNotas()">Exibir Notas</button>
+        </section>
+
+        <!-- Seção para interagir com Turmas -->
+        <section id="turma-zone">
+            <div class="crud__container">
+                <button class="outline secondary" id="btn-voltar">voltar</button>
+                <div class="input__container">
+                    <input type="text" name="nome-aluno" id="nome-aluno__turma" placeholder="Insira o nome do aluno...">
+                </div>
+                <div class="buttons__container">
+                    <button class="outline secondary" id="btn-inserir-aluno">Inserir Aluno</button>
+                    <button class="outline secondary" id="btn-deletar-aluno">Deletar Aluno</button>
+                    <button class="outline secondary" id="btn-listar-alunos">Listar Alunos</button>
+                </div>
+            </div>
+            <div class="alunos_grid">
+                <table class="striped">
+                    <thead>
+                        <tr id="thead_row">
+                        </tr>
+                    </thead>
+                    <tbody id="tbody"></tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+    <script type="module" src="js/script.js"></script>
+    <script type="module" src="Pages/turmaZone.js"></script>
+    <!-- Script do Toastify -->
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+</body>
+
+</html>
