@@ -1,16 +1,21 @@
 import { Aluno } from "../js/Aluno.js"
 import * as PaginaInicial from "../js/script.js";
 
+let turma = null;
+
+const btnInserirAluno = document.getElementById("btn-inserir-aluno");
+const nomeAlunoInput = document.getElementById("nome-aluno__turma");
 
 export function turmaZone() {
     turma = PaginaInicial.carregarTurmaSelecionada()
     // Remove event listeners duplicados
-    // necessario porque dá erro de replicar a ação para todas as turmas 
+    // Necessario porque dá erro de replicar a ação para todas as turmas 
     removerEventListeners();
 
     btnInserirAluno.addEventListener("click", handleInserirAluno);
+    nomeAlunoInput.addEventListener("keyup", keyUpHandler);
 
-    // necessário porque no LocalStorage tá escrito guia ao invés de Guia de Turismo kkkk
+    // Necessário porque no LocalStorage tá escrito guia ao invés de Guia de Turismo kkkk
     document.getElementById("turma-header").innerHTML = turma.turmaNome === "guia" ? "<h1>Guia de Turismo</h1>" : `<h1>${turma.turmaNome.charAt(0).toUpperCase() + turma.turmaNome.slice(1)}</h1>`;
 
     handleListarAlunos();
@@ -38,8 +43,7 @@ function keyUpHandler(event) {
 function handleInserirAluno() {
     if (turma) {
         const nomeAlunoInput = document.getElementById("nome-aluno__turma");
-        if (nomeAlunoInput.value.trim() !== "") {
-
+        if (nomeAlunoInput.value.trim().length > 2) {
             const alunoInserido = turma.insertAluno(nomeAlunoInput.value.trim());
             if (!alunoInserido) {
                 return;
@@ -47,23 +51,17 @@ function handleInserirAluno() {
 
             const tabelaCorpo = document.getElementById("tbody");
             const ultimoAluno = turma.alunos[turma.alunos.length - 1];
-            renderizarAluno(ultimoAluno, tabelaCorpo); // Reutiliza renderizarAluno
+            renderizarAluno(ultimoAluno, tabelaCorpo);
 
             atualizarTurmaNoLocalStorage(turma);
 
             nomeAlunoInput.value = "";
             showMyToast("Aluno inserido com sucesso!");
         } else {
-            alert("Digite o nome do aluno");
+            alert("Nome do aluno deve ter no mínimo 3 caracteres");
         }
     }
 }
-
-
-
-let turma = null;
-
-const btnInserirAluno = document.getElementById("btn-inserir-aluno");
 
 function handleDeletarAluno(aluno) {
     if (turma) {
@@ -77,6 +75,21 @@ function handleDeletarAluno(aluno) {
         }
     }
 }
+
+function handleEditarAluno(aluno) {
+    if (!turma) {
+        return;
+    }
+    if (!aluno) {
+        return;
+    }
+    const tabelaCorpo = document.getElementById("tbody");
+    if (turma.updateAluno(aluno)) {
+        renderizarEditAluno(aluno, tabelaCorpo);
+    }
+}
+
+
 
 
 function handleListarAlunos() {
@@ -133,6 +146,7 @@ function handleListarAlunos() {
                 row.appendChild(tdNota);
             }
 
+            // Cria a celula do botão de delete
             const trashIcon = `<svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 0 448 512">
                                 <path fill="#c5c5c5" d="M135.2 17.7L128 32 32 32C14.3 32 0 46.3 0 64S14.3 96 32 96l384 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-96 0-7.2-14.3C307.4 6.8 296.3 0 284.2 0L163.8 0c-12.1 0-23.2 6.8-28.6 17.7zM416 128L32 128 53.2 467c1.6 25.3 22.6 45 47.9 45l245.8 0c25.3 0 46.3-19.7 47.9-45L416 128z"/>
                                </svg>
@@ -227,7 +241,7 @@ function renderizarEditAluno(aluno, tabelaCorpo) {
 }
 
 function renderizarDeleteAluno(alunoNome, tabelaCorpo) {
-    const linhaARemover = Array.from(tabelaCorpo.rows).find(row => 
+    const linhaARemover = Array.from(tabelaCorpo.rows).find(row =>
         Array.from(row.cells).some(cell => cell.textContent.includes(alunoNome))
     );
     
@@ -252,12 +266,22 @@ function renderizarAluno(aluno, tabelaCorpo) {
     }
 
     // Cria células para as notas com base no total de avaliações da turma
-    for (let i = 0; i < aluno.turmaEntity.avaliacoesTotais; i++) {
+    for (let i = 0; i < turma.avaliacoesTotais; i++) {
         const tdNota = document.createElement("td");
         tdNota.textContent = aluno.notas[i] !== undefined ? aluno.notas[i] : "--";
         row.appendChild(tdNota);
+        tdNota.addEventListener("dblclick", (event) => {
+            handleEditarAluno(aluno)
+            if (aluno) {
+                handleEditarAluno(aluno);
+            }
+            event.target.innerText = "";
+            event.target.focus();
+        });
     }
 
+
+    // Cria o botão de delete em cada linha da tabela
     const trashIcon = `<svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 0 448 512">
                         <path fill="#c5c5c5" d="M135.2 17.7L128 32 32 32C14.3 32 0 46.3 0 64S14.3 96 32 96l384 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-96 0-7.2-14.3C307.4 6.8 296.3 0 284.2 0L163.8 0c-12.1 0-23.2 6.8-28.6 17.7zM416 128L32 128 53.2 467c1.6 25.3 22.6 45 47.9 45l245.8 0c25.3 0 46.3-19.7 47.9-45L416 128z"/>
                        </svg>
