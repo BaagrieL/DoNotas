@@ -11,7 +11,8 @@ export function turmaZone() {
     // Adicionando os event listeners com as novas funções
     btnInserirAluno.addEventListener("click", handleInserirAluno);
     btnDeletarAluno.addEventListener("click", handleDeletarAluno);
-    btnListarAlunos.addEventListener("click", handleListarAlunos);
+
+    document.getElementById("turma-header").innerHTML = turma.turmaNome === "guia" ? "<h1>Guia de Turismo</h1>" : `<h1>${turma.turmaNome.charAt(0).toUpperCase() + turma.turmaNome.slice(1)}</h1>`;
 
     handleListarAlunos();
 }
@@ -211,5 +212,4 @@ function atualizarTurmaNoLocalStorage(turma) {
 function removerEventListeners() {
     btnInserirAluno.removeEventListener("click", handleInserirAluno);
     btnDeletarAluno.removeEventListener("click", handleDeletarAluno);
-    btnListarAlunos.removeEventListener("click", handleListarAlunos);
 }
