@@ -59,6 +59,20 @@ export class Turma {
         });
     }
 
+    // UPDATE
+    /**
+     * Atualiza as informações de um aluno na lista de alunos da turma.
+     * @param {Aluno} aluno - O aluno a ser atualizado.
+     * @returns {boolean} True se o aluno for encontrado e atualizado, false caso contrário.
+     */
+    updateAluno(aluno) {
+        const index = this.alunos.findIndex((a) => a.nome === aluno.nome);
+        if (index !== -1) {
+            this.alunos[index] = aluno;
+            return true;
+        }
+        return false;
+    }
     // CLEAR
     clearAllAlunos() {
         this.alunos = [];
