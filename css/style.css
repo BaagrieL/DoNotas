@@ -37,9 +37,11 @@ td > svg {
 
 #turma-zone {
     display: none;
+    flex-flow: column nowrap;
+    gap: 50px;
+
 
     #turma-header {
-        margin-bottom: 50px;
         text-align: center;
     }
 
