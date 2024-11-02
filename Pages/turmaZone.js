@@ -14,7 +14,27 @@ export function turmaZone() {
     document.getElementById("turma-header").innerHTML = turma.turmaNome === "guia" ? "<h1>Guia de Turismo</h1>" : `<h1>${turma.turmaNome.charAt(0).toUpperCase() + turma.turmaNome.slice(1)}</h1>`;
 
     handleListarAlunos();
+
+    // Evento de clique no botão de editar
+    document.querySelectorAll("td:nth-child(n+4)").forEach(td => {
+        td.addEventListener("dblclick", (event) => {
+            const alunoNome = td.parentNode.cells[0].textContent;
+            const aluno = turma.getAllAlunos().find(aluno => aluno.nome === alunoNome);
+            if (aluno) {
+                handleEditarAluno(aluno);
+            }
+            event.target.innerText = "";
+            event.target.focus();
+        });
+    });
 }
+
+function keyUpHandler(event) {
+    if (event.key === "Enter") {
+        handleInserirAluno();
+    }
+}
+
 function handleInserirAluno() {
     if (turma) {
         const nomeAlunoInput = document.getElementById("nome-aluno__turma");
