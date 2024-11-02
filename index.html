@@ -50,15 +50,19 @@
 
         <!-- Seção para interagir com Turmas -->
         <section id="turma-zone">
-            <header id="turma-header"></header>
+            <header id="turma-header">
+                
+            </header>
             <div class="crud__container">
-                <button class="outline secondary" id="btn-voltar">voltar</button>
+                <button class="secondary" id="btn-voltar">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="60" viewBox="0 0 512 512">
+                        <title>voltar</title>
+                        <polyline points="328 112 184 256 328 400" style="fill:none;background:none;stroke:#c5c5c5;stroke-linecap:round;stroke-linejoin:round;stroke-width:48px"/>
+                    </svg>
+                </button>
                 <div class="input__container">
                     <input type="text" name="nome-aluno" id="nome-aluno__turma" placeholder="Insira o nome do aluno...">
-                </div>
-                <div class="buttons__container">
-                    <button class="outline secondary" id="btn-inserir-aluno">Inserir Aluno</button>
-                    <button class="outline secondary" id="btn-deletar-aluno">Deletar Aluno</button>
+                    <button class="outline secondary" id="btn-inserir-aluno">Inserir</button>
                 </div>
             </div>
             <div class="alunos_grid">
