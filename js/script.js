@@ -33,7 +33,7 @@ export function goToPage(page) {
             break;
         case 2:
             document.getElementById("select-turma__contatiner").style.display = "none";
-            document.getElementById("turma-zone").style.display = "block";
+            document.getElementById("turma-zone").style.display = "flex";
             document.getElementById("aluno-zone").style.display = "none";
             turmaZone();
             break;
