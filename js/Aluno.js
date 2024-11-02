@@ -1,10 +1,10 @@
 export class Aluno {
-    constructor(nome) {
-        this.turmaEntity = null;
+    constructor(nome, turmaEntity = null, notas = [], media = 0, aprovado = false) {
         this.nome = nome;
-        this.notas = [];
-        this.media = 0;
-        this.aprovado = false;
+        this.turmaEntity = turmaEntity;
+        this.notas = notas;
+        this.media = media;
+        this.aprovado = aprovado;
     }
 
     inserirNovaNota(nota) {
