@@ -53,9 +53,15 @@ export class Turma {
          * Percorre a lista de alunos e adiciona cada um a lista de alunos
          * da turma.
          */
-        alunos.map((aluno) =>{ 
-            const novoAluno = new Aluno(aluno.nome);
-            this.alunos.push(novoAluno);   
+        alunos.map((aluno) => {
+            const turmaEntity = aluno.turmaEntity !== null ? aluno.turmaEntity : null;
+            const notas = aluno.notas && aluno.notas.length > 0 ? aluno.notas : [];
+            const media = aluno.media !== 0 ? aluno.media : 0;
+            const aprovado = aluno.aprovado !== false ? aluno.aprovado : false;
+
+            const novoAluno = new Aluno(aluno.nome, turmaEntity, notas, media, aprovado);
+
+            this.alunos.push(novoAluno);
         });
     }
 
