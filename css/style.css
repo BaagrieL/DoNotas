@@ -1,40 +1,3 @@
-/* Reset
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-html,
-body {
-    width: 100%;
-    height: 100%;
-}
-
-body {
-    font-family: Arial, sans-serif;
-    line-height: 1.6;
-    background-color: #f5f5f5;
-}
-
-a {
-    text-decoration: none;
-    color: inherit;
-    cursor: pointer;
-}
-
-
-/* .app {
-    display: flex;
-    flex-flow: column nowrap;
-    justify-content: center;
-    align-items: center;
-    gap: 30px;
-    width: 100%;
-    height: 100%;
-    position: relative;
-} */
-
 section {
     width: 90%;
 }
@@ -58,26 +21,14 @@ section {
     gap: 80px;
     position: relative;
 }
-/* 
-#select-turma__contatiner main {
-    gap: 70px;
-} */
-
-/* #select-turma {
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-    background: url(http://www.webcis.com.br/images/imagens-noticias/select/ico-seta-appearance.gif) no-repeat #eeeeee;
-    background-position: 218px center;
-    width: 250px;
-    height: 30px;
-    border: 1px solid #ddd;
-    border-radius: 10px;
-    padding: 2px 10px;
-} */
 
 #turma-zone {
     display: none;
+
+    #turma-header {
+        margin-bottom: 50px;
+        text-align: center;
+    }
 }
 
 #aluno-zone {
@@ -89,38 +40,3 @@ section {
     top: 10px;
     left: 10px;
 }
-/* 
-.btn {
-    padding: 10px 30px;
-    border: 2px solid #49117e;
-    border-radius: 20px;
-    transition: all .3s ease-in-out;
-
-    &:hover {
-        background-color: #49117e;
-        color: #f5f5f5;
-        border-color: #f5f5f5;
-        transition: all .3s ease-in-out;
-    }
-} */
-
-/* .crud__container {
-    display: flex;
-    flex-flow: column nowrap;
-    gap: 30px;
-
-    input {
-        padding: 10px 20px;
-        width: 300px;
-        border: 2px solid #320061;
-        border-radius: 12px;
-    }
-}
-
-.buttons__container {
-    width: 70%;
-    display: flex;
-    flex-flow: column nowrap;
-    align-self: center;
-    gap: 8px;
-} */
