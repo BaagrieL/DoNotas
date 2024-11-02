@@ -136,6 +136,76 @@ function renderizarTabelaCompleta() {
     turma.alunos.forEach(aluno => renderizarAluno(aluno, tabelaCorpo));
 }
 
+function renderizarEditAluno(aluno, tabelaCorpo) {
+    const row = Array.from(tabelaCorpo.rows).find(row =>
+        Array.from(row.cells).some(cell => cell.textContent.includes(aluno.nome))
+    );
+
+    if (row) {
+        console.log('------------------ Editando aluno ------------------');
+        const cells = Array.from(row.cells);
+
+        cells[0].textContent = aluno.nome;
+        cells[1].textContent = aluno.media;
+        cells[2].textContent = aluno.aprovado ? "sim" : "não";
+
+        // Renderizar e permitir edição nas células de notas.
+        for (let i = 0; i < turma.avaliacoesTotais; i++) {
+            const notaCell = cells[i + 3];
+            notaCell.textContent = aluno.notas[i] !== undefined ? aluno.notas[i] : "--";
+            notaCell.contentEditable = true;
+
+            notaCell.addEventListener('keydown', (event) => {
+                if (event.key === 'Enter') {
+                    event.preventDefault();
+                    cells.forEach(cell => {
+                        cell.contentEditable = false;
+                    })
+                    const novaNota = parseFloat(notaCell.textContent.replace(/\s+/g, '').trim());
+                    if (!isNaN(novaNota)) {
+                        aluno.notas[i] = novaNota;
+                        aluno.calcularMedia();
+                        cells[1].textContent = aluno.media;  
+                        cells[2].textContent = aluno.aprovado ? "sim" : "não";
+                        atualizarTurmaNoLocalStorage(turma);
+                        notaCell.blur();
+                    } else {
+                        notaCell.textContent = !isNaN(aluno.notas[i]) ? aluno.notas[i] : "--";
+                    }
+                    
+                    
+                }
+            });
+
+
+            // Adiciona o evento `blur` para salvar a nota ao perder o foco.
+            notaCell.addEventListener('blur', () => {
+                const novaNota = parseFloat(notaCell.textContent);
+                cells.forEach(cell => {
+                    cell.contentEditable = false;
+                })
+                if (!isNaN(novaNota)) {
+                    aluno.notas[i] = novaNota; 
+                    atualizarTurmaNoLocalStorage(turma);
+                } else {
+                    // Caso o valor não seja numérico, exibe a nota antiga ou "--".
+                    // Isso é necessário pois, caso eu insira uma Palavra ele não deixa o campo preencher e volta ao valor anterior.
+                    // Caso eu escreva uma palavra com números no final, ele também não permite, mas caso eu insira um número com palavra no final ele permite.
+                    // Mas, caso eu insira um número com palavra no final, ele salva apenas a parte numérica no local storage e não a palavra.
+                    const valor = notaCell.textContent.replace(/\s+/g, '').trim();
+                    if (isNaN(parseFloat(valor))) {
+                        notaCell.textContent = !isNaN(aluno.notas[i]) ? aluno.notas[i] : "--";
+                    } else {
+                        notaCell.textContent = parseFloat(valor).toString();
+                    }
+                }
+            });
+        }
+
+        console.log('Células atualizadas:', cells);
+    }
+}
+
 function renderizarDeleteAluno(alunoNome, tabelaCorpo) {
     const linhaARemover = Array.from(tabelaCorpo.rows).find(row => 
         Array.from(row.cells).some(cell => cell.textContent.includes(alunoNome))
