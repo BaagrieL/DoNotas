@@ -1,6 +1,19 @@
+body {
+    width: 100dvw;
+}
+
 section {
     width: 90%;
 }
+
+td > svg {
+    cursor: pointer;
+
+    &:hover {
+        animation: shake 0.5s;
+        animation-iteration-count: infinite;
+    }
+} 
 
 .centralizado {
     display: flex;
@@ -29,6 +42,18 @@ section {
         margin-bottom: 50px;
         text-align: center;
     }
+
+    .input__container {
+        display: flex;
+        flex-flow: row nowrap;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+
+        input {
+            margin: 0;
+        }
+    }
 }
 
 #aluno-zone {
@@ -39,4 +64,29 @@ section {
     position: absolute;
     top: 10px;
     left: 10px;
+    border-color: transparent;
+
+    &:not(:hover) {
+        background-color: transparent;
+    }
+    &:hover {
+        background-color: #0d0f14c0;
+    }
 }
+
+
+/* Animation */
+@keyframes shake {
+    0% { transform: translate(1px, 1px) rotate(0deg); }
+    10% { transform: translate(-1px, -2px) rotate(-1deg); }
+    20% { transform: translate(-3px, 0px) rotate(1deg); }
+    30% { transform: translate(3px, 2px) rotate(0deg); }
+    40% { transform: translate(1px, -1px) rotate(1deg); }
+    50% { transform: translate(-1px, 2px) rotate(-1deg); }
+    60% { transform: translate(-3px, 1px) rotate(0deg); }
+    70% { transform: translate(3px, 1px) rotate(-1deg); }
+    80% { transform: translate(-1px, -1px) rotate(1deg); }
+    90% { transform: translate(1px, 2px) rotate(0deg); }
+    100% { transform: translate(1px, -2px) rotate(-1deg); }
+  }
+  
