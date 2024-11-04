@@ -66,6 +66,7 @@ function handleInserirAluno() {
 function handleDeletarAluno(aluno) {
     if (turma) {
         const tabelaCorpo = document.getElementById("tbody");
+        if (!confirm(`Deseja realmente EXCLUIR [${aluno.nome}]?`)) return;
         if (turma.deleteAluno(aluno.nome)) {
             atualizarTurmaNoLocalStorage(turma);
             renderizarDeleteAluno(aluno.nome, tabelaCorpo);
