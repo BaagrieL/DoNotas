@@ -236,8 +236,6 @@ function renderizarEditAluno(aluno, tabelaCorpo) {
                 }
             });
         }
-
-        console.log('Células atualizadas:', cells);
     }
 }
 
