@@ -1,16 +1,8 @@
-/* Adicione essa linha para definir o tamanho máximo do conteúdo */
-body,
-main {
-    overflow-x: hidden;
-}
-
-/* Adicione essa linha para definir o tamanho máximo do conteúdo */
 .input,
 select {
     width: 100%;
 }
 
-/* Defina o layout para telas com tamanho máximo de 768px */
 @media (max-width: 768px) {
     main {
         flex-direction: column;
@@ -29,9 +21,7 @@ select {
     }
 }
 
-/* Defina o layout para telas com tamanho máximo de 480px */
 @media (max-width: 480px) {
-
     #select-turma__contatiner {
         align-items: center;
     }
@@ -60,14 +50,11 @@ select {
 
     table {
         max-width: 100%;
-        /* scale: 0.8; */
-        
     }
 
     table tr td,
     th {
         padding: 10px 1px;
-        /* max-width: 100%; */
         width: min-content;
         font-size: 10px;
     }
