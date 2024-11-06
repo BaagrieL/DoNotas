@@ -1,5 +1,6 @@
 import { Aluno } from "../js/Aluno.js"
 import * as PaginaInicial from "../js/script.js";
+import * as Popup from "../js/popup.js";
 
 let turma = null;
 
@@ -16,20 +17,24 @@ export function turmaZone() {
     nomeAlunoInput.addEventListener("keyup", keyUpHandler);
 
     // Necessário porque no LocalStorage tá escrito guia ao invés de Guia de Turismo kkkk
-    document.getElementById("turma-header").innerHTML = turma.turmaNome === "guia" ? "<h1>Guia de Turismo</h1>" : `<h1>${turma.turmaNome.charAt(0).toUpperCase() + turma.turmaNome.slice(1)}</h1>`;
+    document.getElementById("title-turma-nome").innerHTML = turma.turmaNome === "guia" ? "<h1>Guia de Turismo</h1>" : `<h1>${turma.turmaNome.charAt(0).toUpperCase() + turma.turmaNome.slice(1)}</h1>`;
 
     handleListarAlunos();
 
-    // Evento de clique no botão de editar
-    document.querySelectorAll("td:nth-child(n+4)").forEach(td => {
+    // Evento de clique nas células de notas para editar
+    document.querySelectorAll("td").forEach((td, index) => {
         td.addEventListener("dblclick", (event) => {
             const alunoNome = td.parentNode.cells[0].textContent;
             const aluno = turma.getAllAlunos().find(aluno => aluno.nome === alunoNome);
             if (aluno) {
-                handleEditarAluno(aluno);
+                if (index === 0) {
+                    handleEditarNomeAluno(aluno);
+                } else if (index >= 3) { 
+                    handleEditarAluno(aluno);
+                    event.target.innerText = "";
+                    event.target.focus();
+                }
             }
-            event.target.innerText = "";
-            event.target.focus();
         });
     });
 }
@@ -56,7 +61,7 @@ function handleInserirAluno() {
             atualizarTurmaNoLocalStorage(turma);
 
             nomeAlunoInput.value = "";
-            showMyToast("Aluno inserido com sucesso!");
+            Popup.createPopup("Aluno inserido com sucesso!", true);
         } else {
             alert("Nome do aluno deve ter no mínimo 3 caracteres");
         }
@@ -70,7 +75,7 @@ function handleDeletarAluno(aluno) {
         if (turma.deleteAluno(aluno.nome)) {
             atualizarTurmaNoLocalStorage(turma);
             renderizarDeleteAluno(aluno.nome, tabelaCorpo);
-            showMyToast("Aluno deletado com sucesso!");
+            Popup.createPopup("Aluno deletado com sucesso!", false);
         } else {
             alert(`Algo deu errado ao deletar ${aluno.nome} da turma de ${turma.turmaNome}`);
         }
@@ -171,13 +176,47 @@ function renderizarTabelaCompleta() {
     turma.alunos.forEach(aluno => renderizarAluno(aluno, tabelaCorpo));
 }
 
+function handleEditarNomeAluno(aluno) {
+    if (!turma) {
+        return;
+    }
+    if (!aluno) {
+        return;
+    }
+    const tabelaCorpo = document.getElementById("tbody");
+    if (turma.updateAluno(aluno)) {
+        renderizarEditNomeAluno(aluno, tabelaCorpo);
+    }
+}
+
+function renderizarEditNomeAluno(aluno, tabelaCorpo) {
+    const row = Array.from(tabelaCorpo.rows).find(row =>
+        Array.from(row.cells).some(cell => cell.textContent.includes(aluno.nome))
+    );
+
+    if (row) {
+        const cells = Array.from(row.cells);
+
+        // Renderizar todas as células com seus valores originais
+        cells.forEach((cell, index) => {
+            if (index === 0) {
+                cell.textContent = "";
+                cell.contentEditable = "true";
+                cell.focus();
+            } else {
+                cell.textContent = aluno[index === 1 ? "media" : index === 2 ? "aprovado" ? "sim" : "não" : "notas"][index - 3];
+            }
+        });
+    }
+}
+
+
 function renderizarEditAluno(aluno, tabelaCorpo) {
     const row = Array.from(tabelaCorpo.rows).find(row =>
         Array.from(row.cells).some(cell => cell.textContent.includes(aluno.nome))
     );
 
     if (row) {
-        console.log('------------------ Editando aluno ------------------');
         const cells = Array.from(row.cells);
 
         cells[0].textContent = aluno.nome;
@@ -204,6 +243,9 @@ function renderizarEditAluno(aluno, tabelaCorpo) {
                         cells[2].textContent = aluno.aprovado ? "sim" : "não";
                         atualizarTurmaNoLocalStorage(turma);
                         notaCell.blur();
+                        if (i < turma.avaliacoesTotais - 1) {
+                            cells[i + 4].dispatchEvent(new MouseEvent('dblclick', { bubbles: true, cancelable: true }));
+                        }
                     } else {
                         notaCell.textContent = !isNaN(aluno.notas[i]) ? aluno.notas[i] : "--";
                     }
@@ -216,11 +258,15 @@ function renderizarEditAluno(aluno, tabelaCorpo) {
             // Adiciona o evento `blur` para salvar a nota ao perder o foco.
             notaCell.addEventListener('blur', () => {
                 const novaNota = parseFloat(notaCell.textContent);
+                
                 cells.forEach(cell => {
                     cell.contentEditable = false;
                 })
                 if (!isNaN(novaNota)) {
-                    aluno.notas[i] = novaNota; 
+                    aluno.notas[i] = novaNota;
+                    aluno.calcularMedia();
+                    cells[1].textContent = aluno.media;  
+                    cells[2].textContent = aluno.aprovado ? "sim" : "não";
                     atualizarTurmaNoLocalStorage(turma);
                 } else {
                     // Caso o valor não seja numérico, exibe a nota antiga ou "--".
@@ -318,24 +364,6 @@ function insertNota(aluno, nota) {
 function insertAvaliação(turma) {
     turma.avaliacoesTotais += 1;
     atualizarTurmaNoLocalStorage(turma);
-}
-
-
-function showMyToast(message, duration, color) {
-    const toast = new Toastify({
-        text: `${message ? message : 'mensagem vazia'} `,
-        duration: `${duration ? duration : 1200} `,
-        gravity: "bottom",
-        position: 'right',
-        style: {
-            background: `${color ? color : "#4caf50"} `,
-            maxHeight: "100vh",
-            overflowY: "auto",
-            borderRadius: "5px",
-        },
-        close: true
-
-    }).showToast();
 }
 
 function atualizarTurmaNoLocalStorage(turma) {

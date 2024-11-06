@@ -1,0 +1,99 @@
+/* Adicione essa linha para definir o tamanho máximo do conteúdo */
+body,
+main {
+    overflow-x: hidden;
+}
+
+/* Adicione essa linha para definir o tamanho máximo do conteúdo */
+.input,
+select {
+    width: 100%;
+}
+
+/* Defina o layout para telas com tamanho máximo de 768px */
+@media (max-width: 768px) {
+    main {
+        flex-direction: column;
+    }
+
+    section {
+        margin-bottom: 20px;
+    }
+
+    .card {
+        margin-bottom: 20px;
+    }
+
+    table {
+        font-size: 14px;
+    }
+}
+
+/* Defina o layout para telas com tamanho máximo de 480px */
+@media (max-width: 480px) {
+
+    #select-turma__contatiner {
+        align-items: center;
+    }
+
+    main {
+        padding: 10px;
+    }
+
+    section {
+        padding: 20px;
+    }
+
+    .card {
+        padding: 20px;
+    }
+
+    select {
+        font-size: 14px;
+    }
+
+    .alunos_grid {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+    }
+
+    table {
+        max-width: 100%;
+        /* scale: 0.8; */
+        
+    }
+
+    table tr td,
+    th {
+        padding: 10px 1px;
+        /* max-width: 100%; */
+        width: min-content;
+        font-size: 10px;
+    }
+
+    .title {
+        font-size: 28px;
+        text-align: center;
+    }
+
+    #btn-inserir-aluno {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 16px;
+        width: 30%;
+        height: 60px;
+    }
+
+    #btn-voltar {
+        position: absolute;
+        transform: scale(0.7);
+        top: 0;
+        left: -16px;
+    }
+
+    .popup {
+        width: fit-content;
+    }
+}

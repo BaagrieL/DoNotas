@@ -5,30 +5,35 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" href="./assets/img/icon.png" />
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/utils.css">
+    <link rel="stylesheet" href="css/form.css">
     <link rel="stylesheet" href="css/style.css" />
-    <!-- Pico Css  -->
-    <link rel="stylesheet" href="libs/pico-main/css/pico.min.css" />
-    <!-- CSS do Toastify -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <link rel="stylesheet" href="css/popup.css" />
+    <link rel="stylesheet" href="css/responsive.css">
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
     <title>Do Notas</title>
 </head>
 
 <body>
-    <main class="app container centralizado">
+    <main class="app container  ">
         <!-- Pagina Inicial -->
-        <section id="select-turma__contatiner">
-            <h1>Selecione a turma</h1>
-            <main>
-                <select id="select-turma">
+        <section id="select-turma__contatiner" class="card">
+            <h1 class="title">Selecione a turma</h1>
+            <main class="gap">
+                <select id="select-turma" class="input">
                     <option value="informática">Informática</option>
                     <option value="guia">Guia de Turismo</option>
                     <option value="enfermagem">Enfermagem</option>
                 </select>
-                <small>Selecione uma turma</small>
-                <button class="outline secondary" id="btn-selecionar-turma">Continuar</button>
+                <button class="btn outline low-contrast" id="btn-selecionar-turma">
+                    <span>Continuar</span>
+                </button>
             </main>
 
         </section>
+
         <!-- Seção para interagir com Alunos -->
         <section id="aluno-zone">
             <h2>Gerenciamento de Aluno</h2>
@@ -51,18 +56,19 @@
         <!-- Seção para interagir com Turmas -->
         <section id="turma-zone">
             <header id="turma-header">
-                
+                <h2 class="title" id="title-turma-nome"></h2>
             </header>
             <div class="crud__container">
-                <button class="secondary" id="btn-voltar">
+                <button class="btn" id="btn-voltar">
                     <svg xmlns="http://www.w3.org/2000/svg" width="60" viewBox="0 0 512 512">
                         <title>voltar</title>
-                        <polyline points="328 112 184 256 328 400" style="fill:none;background:none;stroke:#c5c5c5;stroke-linecap:round;stroke-linejoin:round;stroke-width:48px"/>
+                        <polyline points="328 112 184 256 328 400"
+                            style="fill:none;background:none;stroke:#c5c5c5;stroke-linecap:round;stroke-linejoin:round;stroke-width:48px" />
                     </svg>
                 </button>
                 <div class="input__container">
                     <input type="text" name="nome-aluno" id="nome-aluno__turma" placeholder="Insira o nome do aluno...">
-                    <button class="outline secondary" id="btn-inserir-aluno">Inserir</button>
+                    <button class="btn outline low-contrast" id="btn-inserir-aluno">Inserir</button>
                 </div>
             </div>
             <div class="alunos_grid">
@@ -76,10 +82,13 @@
             </div>
         </section>
     </main>
+
+    <!-- Popup de sucesso -->
+    <div id="popup" class="popup hidden">
+    </div>
+
     <script type="module" src="js/script.js"></script>
     <script type="module" src="Pages/turmaZone.js"></script>
-    <!-- Script do Toastify -->
-    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 </body>
 
 </html>

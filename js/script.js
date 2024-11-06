@@ -77,7 +77,7 @@ function salvarTurmaNoLocalStorage(turma) {
 export function selecionarTurma(turmaNome) {
     localStorage.setItem("turmaSelecionada", turmaNome);
     const turmaData = localStorage.getItem(turmaNome);
-    console.log(`No selecionarTurma | ${turmaData}`);
+    console.log(`No selecionarTurma`);
     
     if (turmaData) {
         const parsedData = JSON.parse(turmaData);
