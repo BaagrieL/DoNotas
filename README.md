@@ -65,6 +65,7 @@ O **Do Notas** é um sistema simples e eficiente para escolas que desejam gerenc
 Contribuições são bem-vindas! Se desejar colaborar:
 
 1. Clone o repositório.
+
 2. Crie uma nova branch para suas alterações:
     ```bash
     git checkout -b minha-nova-feature
@@ -81,8 +82,33 @@ Contribuições são bem-vindas! Se desejar colaborar:
 
 ---
 
+## Estrutura de pastas
+
+A estrutura de pastas do projeto é a seguinte:
+
+- `css`: Estilos do projeto
+  - `reset.css`: Reset de estilos
+  - `utils.css`: Estilos utilitários
+  - `style.css`: Estilo principal
+  - ...
+- `js`: Scripts e Classes do projeto
+  - `Turma.js`: Classe Turma
+  - `Aluno.js`: Classe Aluno
+  - `script.js`: Script principal
+  - ...
+- `Pages`: Scripts das páginas
+  - `alunoZone.js`: Seção de alunos
+  - `turmaZone.js`: Seção de turmas
+  - ...
+- `index.html`: HTML principal
+- `README.md`: Documentação
+
+
+---
+
 > 💡 **Dica**: Manter o projeto atualizado é fundamental! Sinta-se à vontade para compartilhar sugestões ou melhorias!
 
 ---
 
 **🚀 Obrigado por conferir o Do Notas! Boa codificação!**
+
