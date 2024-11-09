@@ -47,7 +47,7 @@ O **Do Notas** é um sistema simples e eficiente para escolas que desejam gerenc
    Escolha a turma desejada para começar a gerenciar os alunos e notas.
 
 **Adicione um aluno:**  
-   Insira o nome do aluno no campo correspondente e clique em "**Inserir**" para adicioná-lo à lista de alunos da turma.
+   Insira o nome do aluno no campo correspondente e clique em "**Inserir**" ou a tecla "**Enter**" para adicioná-lo à lista de alunos da turma.
 
 **Adicione uma nota para o aluno:**  
    Clique duas vezes no campo de nota e insira o valor. Pressione **Enter** ou clique fora do campo para salvar.
@@ -56,7 +56,7 @@ O **Do Notas** é um sistema simples e eficiente para escolas que desejam gerenc
    Para modificar uma nota existente, clique duas vezes na nota, edite e pressione **Enter** ou clique fora do campo.
 
 **(Opcional) Exclua o aluno:**  
-   Clique no botão "**Excluir**" na linha do aluno para removê-lo e todas as suas notas da turma.
+   Clique no botão "**Excluir**" na linha do aluno para removê-lo e todas as suas notas na turma.
 
 ---
 
