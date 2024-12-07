@@ -20,6 +20,10 @@ export class Aluno {
         }
     }
 
+    modificarNome(novoNome) {
+        this.nome = novoNome;
+    }
+
     calcularMedia() {
         this.media = 0;
         for (let nota of this.notas) {
