@@ -55,6 +55,9 @@ O **Do Notas** é um sistema simples e eficiente para escolas que desejam gerenc
  **(Opcional) Edite a nota do aluno:**  
    Para modificar uma nota existente, clique duas vezes na nota, edite e pressione **Enter** ou clique fora do campo.
 
+**(Opcional) Edite o nome do aluno:**  
+   Para alterar o nome de um aluno, clique duas vezes no nome, edite e pressione **Enter** ou clique fora do campo.
+
 **(Opcional) Exclua o aluno:**  
    Clique no botão "**Excluir**" na linha do aluno para removê-lo e todas as suas notas na turma.
 
