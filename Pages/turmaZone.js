@@ -32,26 +32,29 @@ export function turmaZone() {
 
   // Evento de clique nas células de notas para editar
   document.querySelectorAll("td").forEach((td, index) => {
-    td.addEventListener("dblclick", (event) => {
-      const alunoNome = td.parentNode.cells[0].textContent;
-      const aluno = turma
-        .getAllAlunos()
-        .find((aluno) => aluno.nome === alunoNome);
-      if (aluno) {
-        if (index === 0) {
-          console.log("--------------Editando nome------------");
-          handleEditarNomeAluno(aluno);
-          event.target.innerText = "";
-          event.target.focus();
-        } else if (index >= 3) {
-          console.log("--------------Editando nota------------");
-          handleEditarAluno(aluno);
-          event.target.innerText = "";
-          event.target.focus();
-        }
-      }
-    });
+    td.addEventListener("dblclick", (event) => handleDblClickCell(event, td, index));
   });
+}
+
+function handleDblClickCell(event, td, index) {
+  const alunoNome = td.parentNode.cells[0].textContent;
+  const aluno = turma
+    .getAllAlunos()
+    .find((aluno) => aluno.nome === alunoNome);
+    
+  if (aluno) {
+    if (index === 0) {
+      console.log("--------------Editando nome------------");
+      handleEditarNomeAluno(aluno);
+      event.target.innerText = "";
+      event.target.focus();
+    } else if (index >= 3) {
+      console.log("--------------Editando nota------------");
+      handleEditarAluno(aluno, index - 3);
+      event.target.innerText = "";
+      event.target.focus();
+    }
+  }
 }
 
 function keyUpHandler(event) {
@@ -99,7 +102,7 @@ function handleDeletarAluno(aluno) {
   }
 }
 
-function handleEditarAluno(aluno) {
+function handleEditarAluno(aluno, notaIndex) {
   if (!turma) {
     return;
   }
@@ -108,7 +111,7 @@ function handleEditarAluno(aluno) {
   }
   const tabelaCorpo = document.getElementById("tbody");
   if (turma.updateAluno(aluno)) {
-    renderizarEditAluno(aluno, tabelaCorpo);
+    renderizarEditAluno(aluno, tabelaCorpo, notaIndex);
   }
 }
 
@@ -200,6 +203,115 @@ function handleEditarNomeAluno(aluno) {
   }
 }
 
+const handleNomeKeyDown = (event, aluno) => {  
+  if (event.key === "Enter") {
+    console.log("-----  Enter -----");
+    event.preventDefault();
+
+    const novoNome = event.target.textContent.trim();
+
+    if (novoNome && novoNome !== aluno.nome) {
+      event.target.blur();
+    }
+  }
+};
+
+const handleNomeBlur = (event, cells, aluno, newCellNome) => {
+  console.log("-----  Blur -----");
+
+  cells.forEach((cell) => {
+    cell.contentEditable = false;
+  });
+
+  const novoNome = event.target.textContent.trim();
+  if (novoNome && novoNome !== aluno.nome && novoNome.length > 3) {
+    aluno.nome = novoNome;
+    event.target.contentEditable = false;
+    atualizarTurmaNoLocalStorage(turma);
+    console.log(aluno.nome);
+  } else {
+    if (novoNome.length < 3 && novoNome.length > 0) {
+      alert("O nome deve ter pelo menos 3 caracteres.");
+    }
+    if (novoNome === aluno.nome) {
+    }
+    if (novoNome.length === 0) {
+    }
+    event.target.textContent = aluno.nome;
+  }
+  
+  // Remove os event listeners após o uso
+  newCellNome.removeEventListener("keydown", handleNomeKeyDown);
+  newCellNome.removeEventListener("blur", handleNomeBlur);
+  newCellNome.addEventListener("dblclick", (event) => handleDblClickCell(event, newCellNome, 0), { once: true });
+
+};
+
+const handleNotaKeyDown = (event, aluno, cells, notaCell, i) => {
+  if (event.key === "Enter") {
+    event.preventDefault();
+    cells.forEach((cell) => {
+      cell.contentEditable = false;
+    });
+
+    const novaNota = parseFloat(
+      notaCell.textContent.replace(/\s+/g, "").trim()
+    );
+    if (!isNaN(novaNota)) {
+      aluno.notas[i] = novaNota;
+      aluno.calcularMedia();
+      cells[1].textContent = aluno.media;
+      cells[2].textContent = aluno.aprovado ? "sim" : "não";
+      atualizarTurmaNoLocalStorage(turma);
+      notaCell.blur();
+      // if (i < turma.avaliacoesTotais - 1) {
+      //   cells[i + 3].dispatchEvent(
+      //     new MouseEvent("dblclick", { bubbles: true, cancelable: true })
+      //   );
+      // }
+    } else {
+      notaCell.textContent = !isNaN(aluno.notas[i])
+        ? aluno.notas[i]
+        : "--";
+    }
+  }
+};
+
+const handleNotaBlur = (event, aluno, cells, notaCell, i) => {
+  console.log("-----  Blur -----");
+  
+  const novaNota = parseFloat(notaCell.textContent);
+
+  cells.forEach((cell) => {
+    cell.contentEditable = false;
+  });
+  if (!isNaN(novaNota)) {
+    aluno.notas[i] = novaNota;
+    aluno.calcularMedia();
+    cells[1].textContent = aluno.media;
+    cells[2].textContent = aluno.aprovado ? "sim" : "não";
+    atualizarTurmaNoLocalStorage(turma);
+  } else {
+    // Caso o valor não seja numérico, exibe a nota antiga ou "--".
+    // Isso é necessário pois, caso eu insira uma Palavra ele não deixa o campo preencher e volta ao valor anterior.
+    // Caso eu escreva uma palavra com números no final, ele também não permite, mas caso eu insira um número com palavra no final ele permite.
+    // Mas, caso eu insira um número com palavra no final, ele salva apenas a parte numérica no local storage e não a palavra.
+    const valor = notaCell.textContent.replace(/\s+/g, "").trim();
+    if (isNaN(parseFloat(valor))) {
+      notaCell.textContent = !isNaN(aluno.notas[i])
+        ? aluno.notas[i]
+        : "--";
+    } else {
+      notaCell.textContent = parseFloat(valor).toString();
+    }
+  }
+  
+  // Remove os event listeners após o uso
+  notaCell.removeEventListener("keydown", handleNotaKeyDown);
+  notaCell.removeEventListener("blur", handleNotaBlur);
+  notaCell.addEventListener("dblclick", (event) => handleDblClickCell(event, notaCell, i + 3), { once: true });
+};
+
 function renderizarEditNomeAluno(aluno, tabelaCorpo) {
   const row = Array.from(tabelaCorpo.rows).find((row) =>
     Array.from(row.cells).some((cell) => cell.textContent.includes(aluno.nome))
@@ -218,55 +330,32 @@ function renderizarEditNomeAluno(aluno, tabelaCorpo) {
 
     // Renderizar a cell de nome
     const cellNome = cells[0];
-    cellNome.contentEditable = "true";
+    
+    // Substituir o elemento para remover todos os event listeners antigos
+    const newCellNome = cellNome.cloneNode(true);
+    cellNome.parentNode.replaceChild(newCellNome, cellNome);
+    cells[0] = newCellNome;
+    
+    newCellNome.textContent = "";
+    newCellNome.contentEditable = "true";
+    newCellNome.focus();
+    
 
-    cellNome.removeEventListener("keydown", handleKeyDown);
-    cellNome.removeEventListener("blur", handleBlur);
-    cellNome.addEventListener("keydown", handleKeyDown);
-    cellNome.addEventListener("blur", handleBlur);
-
-    function handleKeyDown(event) {
-      if (event.key === "Enter") {
-        console.log("-----  Enter -----");
-        event.preventDefault();
-
-        const novoNome = event.target.textContent.trim();
-
-        if (novoNome && novoNome !== aluno.nome) {
-          event.target.blur();
-          handleBlur({ target: event.target });
-        }
-      }
-    }
-
-    function handleBlur(event) {
-      console.log("-----  Blur -----");
-
-      cells.forEach((cell) => {
-        cell.contentEditable = false;
-      });
-
-      const novoNome = event.target.textContent.trim();
-      if (novoNome && novoNome !== aluno.nome && novoNome.length > 3) {
-        aluno.nome = novoNome;
-        event.target.contentEditable = false;
-        atualizarTurmaNoLocalStorage(turma);
-        console.log(aluno.nome);
-      } else {
-        if (novoNome.length < 3 && novoNome.length > 0) {
-          alert("O nome deve ter pelo menos 3 caracteres.");
-        }
-        if (novoNome === aluno.nome) {
-        }
-        if (novoNome.length === 0) {
-        }
-        event.target.textContent = aluno.nome;
-      }
-    }
+    newCellNome.addEventListener("keydown", (event) => handleNomeKeyDown(event, aluno));
+    newCellNome.addEventListener("blur", (event) => handleNomeBlur(event, cells, aluno, newCellNome), { once: true });
   }
 }
 
-function renderizarEditAluno(aluno, tabelaCorpo) {
+function renderizarEditAluno(aluno, tabelaCorpo, notaIndex) {
+  if (
+    notaIndex === undefined ||
+    notaIndex < 0 ||
+    notaIndex >= turma.avaliacoesTotais
+  ) {
+    console.warn("Índice de nota inválido ao editar aluno.", notaIndex);
+    return;
+  }
+
   const row = Array.from(tabelaCorpo.rows).find((row) =>
     Array.from(row.cells).some((cell) => cell.textContent.includes(aluno.nome))
   );
@@ -278,74 +367,34 @@ function renderizarEditAluno(aluno, tabelaCorpo) {
     cells[1].textContent = aluno.media;
     cells[2].textContent = aluno.aprovado ? "sim" : "não";
 
-    // Renderizar e permitir edição nas células de notas.
     for (let i = 0; i < turma.avaliacoesTotais; i++) {
       const notaCell = cells[i + 3];
       notaCell.textContent =
         aluno.notas[i] !== undefined ? aluno.notas[i] : "--";
-      notaCell.contentEditable = true;
-
-      notaCell.addEventListener("keydown", (event) => {
-        if (event.key === "Enter") {
-          event.preventDefault();
-          cells.forEach((cell) => {
-            cell.contentEditable = false;
-          });
-
-          const novaNota = parseFloat(
-            notaCell.textContent.replace(/\s+/g, "").trim()
-          );
-          if (!isNaN(novaNota)) {
-            aluno.notas[i] = novaNota;
-            aluno.calcularMedia();
-            cells[1].textContent = aluno.media;
-            cells[2].textContent = aluno.aprovado ? "sim" : "não";
-            atualizarTurmaNoLocalStorage(turma);
-            notaCell.blur();
-            if (i < turma.avaliacoesTotais - 1) {
-              cells[i + 4].dispatchEvent(
-                new MouseEvent("dblclick", { bubbles: true, cancelable: true })
-              );
-            }
-          } else {
-            notaCell.textContent = !isNaN(aluno.notas[i])
-              ? aluno.notas[i]
-              : "--";
-          }
-        }
-      });
-
-      // salva a nota ao sair do campo
-      notaCell.addEventListener("blur", () => {
-        console.log("-----  Blur -----");
-        
-        const novaNota = parseFloat(notaCell.textContent);
-
-        cells.forEach((cell) => {
-          cell.contentEditable = false;
-        });
-        if (!isNaN(novaNota)) {
-          aluno.notas[i] = novaNota;
-          aluno.calcularMedia();
-          cells[1].textContent = aluno.media;
-          cells[2].textContent = aluno.aprovado ? "sim" : "não";
-          atualizarTurmaNoLocalStorage(turma);
-        } else {
-          // Caso o valor não seja numérico, exibe a nota antiga ou "--".
-          // Isso é necessário pois, caso eu insira uma Palavra ele não deixa o campo preencher e volta ao valor anterior.
-          // Caso eu escreva uma palavra com números no final, ele também não permite, mas caso eu insira um número com palavra no final ele permite.
-          // Mas, caso eu insira um número com palavra no final, ele salva apenas a parte numérica no local storage e não a palavra.
-          const valor = notaCell.textContent.replace(/\s+/g, "").trim();
-          if (isNaN(parseFloat(valor))) {
-            notaCell.textContent = !isNaN(aluno.notas[i])
-              ? aluno.notas[i]
-              : "--";
-          } else {
-            notaCell.textContent = parseFloat(valor).toString();
-          }
-        }
-      });
     }
+
+    const targetIndex = notaIndex + 3;
+    const oldNotaCell = cells[targetIndex];
+
+    if (!oldNotaCell) {
+      return;
+    }
+
+    const notaCell = oldNotaCell.cloneNode(true);
+    oldNotaCell.parentNode.replaceChild(notaCell, oldNotaCell);
+    cells[targetIndex] = notaCell;
+
+    notaCell.textContent = "";
+    notaCell.contentEditable = true;
+    notaCell.focus();
+
+    notaCell.addEventListener("keydown", (event) =>
+      handleNotaKeyDown(event, aluno, cells, notaCell, notaIndex)
+    );
+    notaCell.addEventListener("blur", (event) =>
+      handleNotaBlur(event, aluno, cells, notaCell, notaIndex),
+      { once: true }
+    );
   }
 }
 
@@ -379,14 +428,7 @@ function renderizarAluno(aluno, tabelaCorpo) {
     const tdNota = document.createElement("td");
     tdNota.textContent = aluno.notas[i] !== undefined ? aluno.notas[i] : "--";
     row.appendChild(tdNota);
-    tdNota.addEventListener("dblclick", (event) => {
-      handleEditarAluno(aluno);
-      if (aluno) {
-        handleEditarAluno(aluno);
-      }
-      event.target.innerText = "";
-      event.target.focus();
-    });
+    tdNota.addEventListener("dblclick", (event) => handleDblClickCell(event, tdNota, i + 3), { once: true });
   }
 
   // Cria o botão de delete em cada linha da tabela
